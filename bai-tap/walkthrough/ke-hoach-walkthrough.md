@@ -21,18 +21,18 @@ Walkthrough là rà soát ngang hàng để phát hiện vấn đề và trao đ
 
 ## 3. Phạm vi và tài liệu đầu vào
 
-**Phiên bản tham chiếu đã đọc:** `8f56909e3088f2d9712ef65f5ddaab11275d64ea`, nhánh `main` của mã nguồn BranchFlow, đối chiếu ngày 18/11/2026. Trước phiên cần xác minh phiên bản đang dùng; nếu thay đổi, cập nhật vị trí và nhận xét cho phù hợp.
+**Phiên bản mã dùng để chuẩn bị:** candidate `05c6b165132809958c69929b95efac900925043b` của BranchFlow. Đối chiếu đến đầu nhánh `main` `a7f0115b3fd8ac862bf6bceaa0c6ee6f420d6e76` ngày 19/11/2026; so sánh commit xác nhận các thay đổi sau candidate chỉ nằm ở tài liệu phạm vi và hồ sơ kiểm thử, không có tệp mã ứng dụng thay đổi. Trước phiên vẫn cần xác nhận nhóm sẽ walkthrough đúng candidate này.
 
 | Thành phần | Nội dung đưa vào Walkthrough |
 |---|---|
-| `docs/mvp-scope.md` | Quyền Employee, quy tắc giá và giới hạn MVP liên quan đến tạo đơn. |
-| `src/BranchFlow.Api/Controllers/OrdersController.cs`, dòng 8–27 | Điểm vào `POST /api/orders`, vai trò `EMPLOYEE`, gọi service và chuyển ngoại lệ thành phản hồi API. |
-| `src/BranchFlow.Application/DTOs/Sprint4/Contracts.cs`, dòng 26–33 | Cấu trúc request gồm chi nhánh, dòng món, topping, lựa chọn ghi chú và dữ liệu trả về. |
-| `src/BranchFlow.Application/Services/OrderMenuService.cs`, dòng 17–40 | Kiểm tra quyền phạm vi chi nhánh trước khi đọc menu. |
-| `src/BranchFlow.Application/Services/OrderService.cs`, dòng 13–74 và 77–127 | Kiểm tra đầu vào, lấy giá và snapshot từ menu, tính tổng, cấp mã, lưu dữ liệu và xử lý rollback. |
-| `tests/BranchFlow.Tests/Backend/OrderPricingTests.cs` và `OrderServiceTests.cs` | Nguồn tham khảo các kịch bản đã được viết; sự tồn tại của test không chứng minh lần chạy này đã đạt. |
-| `03-CacThanhphan-Chatluong-Phanmem.pdf`, trang 25–27 và 29 | Cơ sở bài giảng về chuẩn bị, tổ chức và ghi nhận Walkthrough. |
-| `Nhom_07_SQA_Walkthrough_DieuChinh.docx` | Bản chuẩn bị trước đó để đối chiếu, không phải biên bản phiên. |
+| `docs/mvp-scope.md` | Quyền Employee, quy tắc giá, ghi chú và giới hạn MVP liên quan đến tạo đơn. |
+| `src/BranchFlow.Api/Controllers/OrdersController.cs`, dòng 10–28 | Route `POST /api/orders`, vai trò `EMPLOYEE`, lấy user ID, gọi service và ánh xạ lỗi. |
+| `src/BranchFlow.Application/DTOs/Sprint4/Contracts.cs`, dòng 26–37 | Request/response tạo đơn; không có trường giá trong request. |
+| `src/BranchFlow.Application/Services/OrderMenuService.cs`, dòng 17–99 | Kiểm tra quyền chi nhánh trước khi đọc menu và dựng dữ liệu menu. |
+| `src/BranchFlow.Application/Services/OrderService.cs`, dòng 13–72 và 77–127 | `PriceItems`, validation, lấy giá/snapshot, tính tổng, transaction, cấp mã, lưu và rollback. |
+| `tests/BranchFlow.Tests/Backend/OrderPricingTests.cs` và `OrderServiceTests.cs` | Các test tham chiếu cho tính giá, validation, transaction và rollback; không thay thế kết quả walkthrough. |
+| `tests/final/2026-11-19/README.md` | Kết quả tích hợp và kiểm tra public được ghi riêng theo môi trường. |
+| [luong-tao-don.md](luong-tao-don.md) | Tài liệu dẫn luồng và kịch bản nói của người trình bày BT05. |
 
 **Ngoài phạm vi phiên:** kiểm thử tải, nghiệm thu toàn hệ thống, thanh toán trực tuyến, tính lương, điều chuyển, kiểm kê/duyệt phiếu và xử lý đơn sai nhiều bước. Có thể ghi vấn đề liên quan để xem xét riêng nhưng không tự mở rộng kết luận của phiên.
 
@@ -52,11 +52,13 @@ Phân công này theo thông tin nhóm đã thống nhất. Người tham dự t
 - [ ] Nhóm trưởng xác nhận nền tảng, liên kết họp và khả năng chia sẻ màn hình cho phiên 08:00 ngày 17/12/2026.
 - [ ] Đối chiếu phiên bản mã và phạm vi MVP đang áp dụng; ghi lại thay đổi so với phiên bản tham chiếu nếu có.
 - [ ] Chia sẻ kế hoạch này, checklist, tài liệu phạm vi, các đoạn mã và bản dự thảo để bốn thành viên đọc trước.
-- [ ] Người trình bày chuẩn bị sơ đồ hoặc ghi chú đường đi của request và ba tình huống ở Mục 6.
+- [ ] Người trình bày đọc và chuẩn bị theo [tài liệu dẫn luồng tạo đơn](luong-tao-don.md), đặc biệt các điểm cần nhóm xác nhận.
 - [ ] Người rà soát đọc checklist, ghi câu hỏi và đánh dấu vị trí cần xem xét.
 - [ ] Thư ký chuẩn bị bảng biên bản, sổ vấn đề và nơi lưu minh chứng; không đưa mật khẩu hoặc token vào tài liệu, ảnh hay bản ghi.
 
 ## 6. Kịch bản Walkthrough
+
+Chi tiết thứ tự đọc mã, hợp đồng request/response, ánh xạ lỗi và kịch bản nói được chuẩn bị tại [Tài liệu dẫn luồng tạo đơn](luong-tao-don.md).
 
 ### Tình huống 1 — Tạo đơn hợp lệ
 
@@ -85,7 +87,7 @@ Thời lượng chỉ là đề xuất; biên bản phải phản ánh diễn bi
 
 ## 8. Đầu ra và theo dõi
 
-- **Trước phiên:** kế hoạch, danh sách tài liệu và checklist; tất cả mục checklist ở trạng thái chưa rà soát cho đến khi có kết quả.
+- **Trước phiên:** kế hoạch, danh sách tài liệu, tài liệu dẫn luồng và checklist; tất cả mục checklist ở trạng thái chưa rà soát cho đến khi có kết quả.
 - **Trong phiên:** biên bản và danh sách vấn đề có vị trí, mô tả, ảnh hưởng hoặc câu hỏi, ý kiến thống nhất và người theo dõi.
 - **Sau phiên:** bản cập nhật danh sách vấn đề; quyết định xử lý hoặc lý do chưa xử lý; liên kết thay đổi và kết quả kiểm tra lại khi thực sự có.
 
